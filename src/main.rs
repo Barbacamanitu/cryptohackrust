@@ -24,6 +24,14 @@ impl From<HexString> for ByteVec {
     }
 }
 
+impl From<u8> for ByteVec {
+    fn from(n: u8) -> Self {
+        ByteVec {
+            bytes: vec![n]
+        }
+    }
+}
+
 impl From<Vec<u8>> for ByteVec {
     fn from(v: Vec<u8>) -> Self {
         ByteVec {
@@ -57,6 +65,16 @@ fn main() {
     let flag = flagand1and3and2.xor(&key1).xor(&key2).xor(&key3);
     let flag_decoded = flag.to_str();
     println!("Decoded flag: {}", flag_decoded);
+
+    //https://cryptohack.org/courses/intro/xorkey0/
+    //73626960647f6b206821204f21254f7d694f7624662065622127234f726927756d
+    let hidden: ByteVec = ByteVec::from(HexString::from("73626960647f6b206821204f21254f7d694f7624662065622127234f726927756d"));
+    for i in 0u8..127 {
+        let other = ByteVec::from(vec![i;hidden.bytes.len()]);
+        let msg = hidden.xor(&other).to_str().to_owned();
+        println!("Message at {0} is: {1}", i, msg);
+    }
+
 }
 
 
